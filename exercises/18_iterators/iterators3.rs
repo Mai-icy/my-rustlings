@@ -1,3 +1,4 @@
+
 #[derive(Debug, PartialEq, Eq)]
 enum DivisionError {
     // Example: 42 / 0
@@ -11,21 +12,42 @@ enum DivisionError {
 // TODO: Calculate `a` divided by `b` if `a` is evenly divisible by `b`.
 // Otherwise, return a suitable error.
 fn divide(a: i64, b: i64) -> Result<i64, DivisionError> {
-    todo!();
+    if b == 0 {
+        Err(DivisionError::DivideByZero)
+    } else if a.overflowing_div(b).1{
+        Err(DivisionError::IntegerOverflow)
+    } else if a % b != 0 {
+        Err(DivisionError::NotDivisible)
+    } else {
+        Ok(a / b)
+    }
 }
-
 // TODO: Add the correct return type and complete the function body.
 // Desired output: `Ok([1, 11, 1426, 3])`
-fn result_with_list() {
+fn result_with_list() -> Result<[i64; 4], DivisionError>{
     let numbers = [27, 297, 38502, 81];
     let division_results = numbers.into_iter().map(|n| divide(n, 27));
+    let mut results: [i64; 4] = [0, 0, 0, 0];
+    for (i, res) in division_results.enumerate() {
+        match res {
+            Err(err) => return Err(err),
+            Ok(value) => results[i] = value,
+        }
+    }
+
+    Ok(results)
 }
 
 // TODO: Add the correct return type and complete the function body.
 // Desired output: `[Ok(1), Ok(11), Ok(1426), Ok(3)]`
-fn list_of_results() {
+fn list_of_results() -> [Result<i64, DivisionError>; 4]{
     let numbers = [27, 297, 38502, 81];
     let division_results = numbers.into_iter().map(|n| divide(n, 27));
+    let mut arr :[Result<i64, DivisionError>; 4] = [Ok(0), Ok(0), Ok(0), Ok(0)];
+    for (i, res) in division_results.enumerate() {
+        arr[i] = res;
+    }
+    arr
 }
 
 fn main() {
